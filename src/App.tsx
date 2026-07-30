@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import PortfolioView from "./components/PortfolioView.tsx";
 import AdminPanel from "./components/AdminPanel.tsx";
+import { loadPortfolioData } from "./lib/portfolioData";
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -42,8 +43,7 @@ export default function App() {
 
   // Fetch brand configurations to support global maintenance settings & theme colors
   useEffect(() => {
-    fetch("/api/portfolio")
-      .then((res) => res.json())
+    loadPortfolioData()
       .then((data) => {
         if (data.site) {
           setSiteSettings(data.site);

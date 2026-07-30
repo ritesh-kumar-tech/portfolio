@@ -26,6 +26,7 @@ import {
   MotionButton 
 } from "./animated/MotionComponents";
 import { motionConfig, usePrefersReducedMotion } from "../motion-config";
+import { loadPortfolioData } from "../lib/portfolioData";
 
 // Types matching server schema
 import { Database as DBType, Project, Blog, Service, Skill, Experience, Education, Certification, Testimonial } from "../types";
@@ -89,10 +90,9 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
   const [submittingContact, setSubmittingContact] = useState(false);
   const [contactNotification, setContactNotification] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  // Load public portfolio data from custom API
+  // Load public portfolio data from the API locally and static JSON on GitHub Pages.
   useEffect(() => {
-    fetch("/api/portfolio")
-      .then((res) => res.json())
+    loadPortfolioData()
       .then((data) => {
         setDb(data);
         setLoading(false);
@@ -107,7 +107,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
 
   // Helper to post dynamic visitor tracking data
   const trackVisit = (pageName: string) => {
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV || import.meta.env.PROD) {
       return;
     }
 
