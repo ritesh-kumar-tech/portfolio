@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import PortfolioView from "./components/PortfolioView.tsx";
 import AdminPanel from "./components/AdminPanel.tsx";
-import { toAppPath, toBrowserPath } from "./lib/githubPages.ts";
-import { loadPortfolioData } from "./lib/portfolioData.ts";
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState(toAppPath(window.location.pathname));
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   const [siteSettings, setSiteSettings] = useState<any>({
     logoText: "Ritesh",
     logoSubtext: "Kumar",
@@ -16,7 +14,7 @@ export default function App() {
   // Track SPA browser navigation changes
   useEffect(() => {
     const handleLocationChange = () => {
-      setCurrentPath(toAppPath(window.location.pathname));
+      setCurrentPath(window.location.pathname);
     };
 
     window.addEventListener("popstate", handleLocationChange);
@@ -44,7 +42,8 @@ export default function App() {
 
   // Fetch brand configurations to support global maintenance settings & theme colors
   useEffect(() => {
-    loadPortfolioData()
+    fetch("/api/portfolio")
+      .then((res) => res.json())
       .then((data) => {
         if (data.site) {
           setSiteSettings(data.site);
@@ -60,13 +59,11 @@ export default function App() {
     // Route redirects
     if (currentPath === "/admin") {
       if (!isTokenPresent) {
-        window.history.replaceState({}, "", toBrowserPath("/admin/login"));
-        setCurrentPath("/admin/login");
+        window.history.replaceState({}, "", "/admin/login");
       }
     } else if (currentPath === "/admin/login") {
       if (isTokenPresent) {
-        window.history.replaceState({}, "", toBrowserPath("/admin"));
-        setCurrentPath("/admin");
+        window.history.replaceState({}, "", "/admin");
       }
     }
 
@@ -87,7 +84,7 @@ export default function App() {
   }, [currentPath]);
 
   const goToPortfolio = () => {
-    window.history.pushState({}, "", toBrowserPath("/"));
+    window.history.pushState({}, "", "/");
   };
 
   const isAdminRoute = currentPath.startsWith("/admin") || currentPath.startsWith("/admin/login");
@@ -99,7 +96,7 @@ export default function App() {
         <div className="w-16 h-16 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-6 animate-pulse">
           ⚙️
         </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-center">System Maintenances Active</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-center">System Maintenance Active</h1>
         <p className="text-xs text-slate-400 max-w-sm text-center mt-2 leading-relaxed">
           Ritesh Kumar's developer portfolio is under structural scheduled maintenance. Please return shortly.
         </p>

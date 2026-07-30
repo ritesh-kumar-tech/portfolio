@@ -1,82 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "motion/react";
+import { motion } from "motion/react";
 import { 
   Code, Server, Database, Workflow, Cpu, Layers, ShoppingBag, RefreshCw, 
   Play, GitCommit, GitPullRequest, Cloud, Send, Github, Linkedin, ExternalLink, 
   FileText, CheckCircle, Phone, MapPin, Mail, ArrowUpRight, Award, MessageSquare, 
   Calendar, Briefcase, GraduationCap, Star, Check, Globe, ChevronRight, X, ArrowUp,
-  Sun, Moon, Menu
+  Sun, Moon, GitBranch, Search, Grid, SlidersHorizontal, Zap, ChevronDown, Quote, ShieldCheck
 } from "lucide-react";
+
+import { ScrambleText } from "./animated/ScrambleText";
+import { ScrollPinnedReveal } from "./animated/ScrollPinnedReveal";
+import { SkillFlowDiagram } from "./animated/SkillFlowDiagram";
+import { InteractiveSkillMatrix } from "./animated/InteractiveSkillMatrix";
+import { HeroBannerShowcase } from "./animated/HeroBannerShowcase";
+import { AnimatedProjectsShowcase } from "./animated/AnimatedProjectsShowcase";
+import { AnimatedTimeline } from "./animated/AnimatedTimeline";
+import { AnimatedServicesShowcase } from "./animated/AnimatedServicesShowcase";
+import { AnimatedContactTerminal } from "./animated/AnimatedContactTerminal";
+import { 
+  MotionSection, 
+  MotionStaggerGroup, 
+  MotionProjectCard, 
+  MotionTechCard, 
+  MotionTimelineItem, 
+  MotionButton 
+} from "./animated/MotionComponents";
+import { motionConfig, usePrefersReducedMotion } from "../motion-config";
 
 // Types matching server schema
 import { Database as DBType, Project, Blog, Service, Skill, Experience, Education, Certification, Testimonial } from "../types";
-import { assetPath } from "../lib/githubPages";
-import { loadPortfolioData } from "../lib/portfolioData";
 
 interface PortfolioViewProps {
   onOpenAdmin: () => void;
   siteName: string;
-}
-
-const easeOutExpo = [0.22, 1, 0.36, 1] as const;
-const WHATSAPP_PHONE = "917463867570";
-const WHATSAPP_MESSAGE = "Hi Ritesh, I have a project to discuss.";
-const RESUME_PATH = "/Ritesh-Kumar-Resume.pdf";
-
-function getWhatsAppUrl(message = WHATSAPP_MESSAGE): string {
-  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
-}
-
-function isUsableExternalUrl(url?: string): boolean {
-  if (!url) return false;
-  return !/example\.com|trackandclaim\.com/i.test(url);
-}
-
-function AnimatedCounter({
-  value,
-  suffix = "",
-  label,
-  className,
-}: {
-  value: number;
-  suffix?: string;
-  label: string;
-  className: string;
-}) {
-  const [displayValue, setDisplayValue] = useState(0);
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setDisplayValue(value);
-      return;
-    }
-
-    let frame = 0;
-    let start: number | null = null;
-    const duration = 1100;
-
-    const tick = (time: number) => {
-      if (start === null) start = time;
-      const progress = Math.min((time - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayValue(Math.round(value * eased));
-
-      if (progress < 1) {
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [prefersReducedMotion, value]);
-
-  return (
-    <div>
-      <p className={className}>{displayValue}{suffix}</p>
-      <p className="text-xs text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono">{label}</p>
-    </div>
-  );
 }
 
 export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewProps) {
@@ -84,34 +40,11 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState("All");
   const [showAllProjects, setShowAllProjects] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 28,
-    restDelta: 0.001,
-  });
-
-  const revealInitial = prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 };
-  const revealAnimate = prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 };
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: prefersReducedMotion ? 0 : 0.09,
-        delayChildren: prefersReducedMotion ? 0 : 0.04,
-      },
-    },
-  };
-  const itemVariants = {
-    hidden: revealInitial,
-    show: {
-      ...revealAnimate,
-      transition: { duration: prefersReducedMotion ? 0.01 : 0.55, ease: easeOutExpo },
-    },
-  };
+  
+  // Skill View & Filtering States
+  const [selectedSkillCategory, setSelectedSkillCategory] = useState<string>("All");
+  const [skillSearchQuery, setSkillSearchQuery] = useState<string>("");
+  const [skillViewMode, setSkillViewMode] = useState<"both" | "flow" | "matrix">("both");
   
   // Custom Theme state (persisted to localStorage, respects system setting)
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -136,23 +69,13 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
     }
   }, [isDark]);
 
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 80);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobileMenuOpen]);
-
   // Custom Detail Modal states
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  const [showAllTestimonials, setShowAllTestimonials] = useState<boolean>(false);
+  const [showAllBlogs, setShowAllBlogs] = useState<boolean>(false);
+  const [blogCategory, setBlogCategory] = useState<string>("All");
+  const [blogSearchQuery, setBlogSearchQuery] = useState<string>("");
 
   // Submitting state for Contact Form
   const [contactForm, setContactForm] = useState({
@@ -168,7 +91,8 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
 
   // Load public portfolio data from custom API
   useEffect(() => {
-    loadPortfolioData()
+    fetch("/api/portfolio")
+      .then((res) => res.json())
       .then((data) => {
         setDb(data);
         setLoading(false);
@@ -183,7 +107,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
 
   // Helper to post dynamic visitor tracking data
   const trackVisit = (pageName: string) => {
-    if (!import.meta.env.DEV) {
+    if (import.meta.env.DEV) {
       return;
     }
 
@@ -207,13 +131,13 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate: Name, email, and message details are required. Phone stays optional.
+    // Validate: Name is required, either Email or Phone is required, Message details is required.
     if (!contactForm.name.trim()) {
       setContactNotification({ type: "error", text: "Please key in your Full Name." });
       return;
     }
-    if (!contactForm.email.trim()) {
-      setContactNotification({ type: "error", text: "Please provide your Email Address so Ritesh can reach you." });
+    if (!contactForm.email.trim() && !contactForm.phone.trim()) {
+      setContactNotification({ type: "error", text: "Please provide either an Email or Phone so Ritesh can reach you." });
       return;
     }
     if (!contactForm.message.trim()) {
@@ -233,7 +157,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
       `Budget: ${budgetValue}\n` +
       `Project Details: ${contactForm.message}`;
 
-    const whatsappUrl = getWhatsAppUrl(formattedMessage);
+    const whatsappUrl = `https://wa.me/917463867570?text=${encodeURIComponent(formattedMessage)}`;
     
     // Open in a new tab
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
@@ -283,8 +207,8 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
     email: "ritesh2001stm@gmail.com",
     linkedin: "https://www.linkedin.com/in/ritesh-kumar-freelancer",
     location: "Ahmedabad, Gujarat, India",
-    profileImage: assetPath("assets/ritesh_profile.jpg"),
-    resumeUrl: assetPath(RESUME_PATH)
+    profileImage: "/assets/ritesh_profile.jpg",
+    resumeUrl: "#"
   };
   const hero = db?.hero || { heading: "Building Scaling Apps", subheading: "4+ Years of Full-Stack Excellence" };
   const services = db?.services || [];
@@ -295,18 +219,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
   const certifications = db?.certifications || [];
   const testimonials = db?.testimonials || [];
   const blogs = db?.blogs || [];
-  const site = db?.site || { logoText: "Ritesh", logoSubtext: "Kumar", socialWhatsApp: getWhatsAppUrl() };
-  const resumeHref = profile.resumeUrl && profile.resumeUrl !== "#" ? profile.resumeUrl : assetPath(RESUME_PATH);
-  const navItems = [
-    { href: "#about", label: "About" },
-    { href: "#services", label: "Services" },
-    { href: "#skills", label: "Skills" },
-    { href: "#portfolio", label: "Projects" },
-    { href: "#experience", label: "Experience" },
-    { href: "#testimonials", label: "Client Buzz" },
-    { href: "#blog", label: "Blog" },
-    { href: "#contact", label: "Get In Touch" },
-  ];
+  const site = db?.site || { logoText: "Ritesh", logoSubtext: "Kumar", socialWhatsApp: "https://wa.me/917463867570" };
 
   // Generate clean categories list for portfolio projects tab
   const projectCategories = ["All", ...Array.from(new Set(projects.map((p: any) => p.category)))];
@@ -340,10 +253,6 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
 
   return (
     <div className={`relative min-h-screen ${t.bgMain} font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden transition-colors duration-300`}>
-      <motion.div
-        className="fixed left-0 top-0 z-[70] h-1 w-full origin-left bg-gradient-to-r from-indigo-500 via-blue-500 to-emerald-400"
-        style={{ scaleX }}
-      />
       
       {/* GLOWING ORBS BACKDROP */}
       <div className={`absolute top-0 left-1/4 w-96 h-96 ${isDark ? "bg-indigo-600/10" : "bg-indigo-500/5"} rounded-full blur-3xl pointer-events-none transition-opacity duration-300`}></div>
@@ -351,20 +260,11 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
       <div className={`absolute bottom-1/4 left-10 w-[450px] h-[450px] ${isDark ? "bg-purple-600/5" : "bg-purple-500/3"} rounded-full blur-3xl pointer-events-none transition-opacity duration-300`}></div>
 
       {/* FLOATING WHATSAPP CTA - bottom-right */}
-      {isMobileMenuOpen && (
-        <button
-          type="button"
-          aria-label="Close mobile menu overlay"
-          className="fixed inset-0 z-30 bg-slate-950/60 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
       <a 
-        href={getWhatsAppUrl()} 
+        href={site.socialWhatsApp || "https://wa.me/917463867570"} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-50 bg-emerald-500 hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-300 transition-transform hover:scale-110 text-white p-4 rounded-full shadow-lg flex items-center justify-center group"
+        className="fixed bottom-6 right-6 z-50 bg-emerald-500 hover:bg-emerald-600 transition-transform hover:scale-110 text-white p-4 rounded-full shadow-lg flex items-center justify-center group"
         title="Chat with Ritesh on WhatsApp"
         id="whatsapp-cta"
       >
@@ -375,14 +275,9 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
       </a>
 
       {/* HEADER NAVIGATION */}
-      <motion.header
-        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: prefersReducedMotion ? 0.01 : 0.4, ease: "easeOut" }}
-        className={`sticky top-0 z-40 backdrop-blur-md ${isDark ? (isScrolled ? "bg-slate-950/95 border-slate-800 shadow-lg shadow-black/20" : "bg-slate-950/80 border-slate-900") : (isScrolled ? "bg-white/95 border-slate-300 shadow-md shadow-slate-900/5" : "bg-white/85 border-slate-200")} border-b transition-colors duration-300`}
-      >
+      <header className={`sticky top-0 z-40 backdrop-blur-md ${isDark ? "bg-slate-950/80 border-slate-900" : "bg-white/85 border-slate-200"} border-b transition-colors duration-300`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#home" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 group min-w-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded-lg">
+          <a href="#home" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg tracking-wider text-white shadow-md shadow-indigo-500/20 group-hover:bg-indigo-500 transition-colors">
               {site.logoText ? site.logoText.slice(0, 2).toUpperCase() : "RK"}
             </div>
@@ -395,17 +290,20 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
           </a>
 
           {/* DESKTOP LINKS */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-            {navItems.map((item) => (
-              <a key={item.href} href={item.href} className={`${t.navLink} transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded`}>
-                {item.label}
-              </a>
-            ))}
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a href="#about" className={`${t.navLink} transition-colors`}>About</a>
+            <a href="#services" className={`${t.navLink} transition-colors`}>Services</a>
+            <a href="#skills" className={`${t.navLink} transition-colors`}>Skills</a>
+            <a href="#portfolio" className={`${t.navLink} transition-colors`}>Projects</a>
+            <a href="#experience" className={`${t.navLink} transition-colors`}>Experience</a>
+            <a href="#testimonials" className={`${t.navLink} transition-colors`}>Client Buzz</a>
+            <a href="#blog" className={`${t.navLink} transition-colors`}>Blog</a>
+            <a href="#contact" className={`${t.navLink} transition-colors mr-2`}>Get In Touch</a>
             
             {/* Inline Theme Toggle Icon */}
             <button 
               onClick={() => setIsDark(!isDark)}
-              className={`p-1.5 rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 ${isDark ? "hover:bg-slate-900 text-amber-400" : "hover:bg-slate-100 text-indigo-600"}`}
+              className={`p-1.5 rounded-lg transition-colors ${isDark ? "hover:bg-slate-900 text-amber-400" : "hover:bg-slate-100 text-indigo-600"}`}
               aria-label="Toggle theme inline"
               title="Switch Theme"
             >
@@ -417,187 +315,32 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
             {/* Action Bar Theme Toggle Icon (Visible always, perfect for Mobile view) */}
             <button 
               onClick={() => setIsDark(!isDark)}
-              className={`p-2.5 min-h-11 min-w-11 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 lg:hidden ${isDark ? "bg-slate-900 hover:bg-slate-800 text-amber-400" : "bg-slate-100 hover:bg-slate-200 text-indigo-600 border border-slate-200"}`}
+              className={`p-2.5 rounded-xl transition-colors md:hidden ${isDark ? "bg-slate-900 hover:bg-slate-800 text-amber-400" : "bg-slate-100 hover:bg-slate-200 text-indigo-600 border border-slate-200"}`}
               aria-label="Toggle theme"
               id="theme-toggle-btn"
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <button
-              type="button"
-              onClick={() => setIsMobileMenuOpen((open) => !open)}
-              aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={isMobileMenuOpen}
-              className={`min-h-11 min-w-11 p-2.5 rounded-xl transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 lg:hidden ${isDark ? "bg-slate-900 hover:bg-slate-800 text-slate-200" : "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200"}`}
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
 
-            <motion.a 
+            <a 
               href="#contact" 
-              whileHover={prefersReducedMotion ? undefined : { y: -2, scale: 1.03 }}
-              whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-              className="hidden lg:inline-flex px-4 py-2 text-xs font-bold font-mono tracking-wide uppercase rounded-lg bg-indigo-600 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 hover:shadow-lg hover:shadow-indigo-500/20 transition-all text-white"
+              className="hidden lg:inline-flex px-4 py-2 text-xs font-bold font-mono tracking-wide uppercase rounded-lg bg-indigo-600 hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20 transition-all text-white"
             >
               Hire Me
-            </motion.a>
+            </a>
           </div>
         </div>
-        {isMobileMenuOpen && (
-          <motion.nav
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`absolute left-4 right-4 top-[calc(100%+0.5rem)] z-50 rounded-2xl border p-3 shadow-2xl lg:hidden ${isDark ? "bg-slate-950/98 border-slate-800" : "bg-white border-slate-200"}`}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`min-h-11 rounded-xl px-4 py-3 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${isDark ? "text-slate-200 hover:bg-slate-900" : "text-slate-800 hover:bg-slate-100"}`}
-                >
-                  {item.label}
-                </a>
-              ))}
-              <a
-                href="#contact"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="min-h-11 rounded-xl px-4 py-3 text-center text-sm font-bold font-mono uppercase bg-indigo-600 hover:bg-indigo-500 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:col-span-2"
-              >
-                Hire Me
-              </a>
-            </div>
-          </motion.nav>
-        )}
-      </motion.header>
+      </header>
 
-      <main>
       {/* 1. HERO SECTION */}
-      <section id="home" className="relative pt-10 pb-12 md:pt-14 md:pb-16 lg:pt-16 lg:pb-20 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.35 }}
-        >
-          
-          <motion.div className="lg:col-span-7 space-y-5" variants={containerVariants}>
-            <motion.div variants={itemVariants} className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${isDark ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-400" : "bg-indigo-50 border-indigo-200 text-indigo-600"} border text-xs font-mono`}>
-              <motion.span
-                className="w-2 h-2 rounded-full bg-emerald-500"
-                animate={prefersReducedMotion ? undefined : { scale: [1, 1.35, 1], opacity: [1, 0.55, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              />
-              Available for New Freelance Contracts
-            </motion.div>
-            
-            <motion.h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold ${t.textBright} leading-[1.08]`}>
-              {(hero.heading || "Crafting High-Volume Web Automations & SaaS backends").split(" ").map((word: string, index: number) => (
-                <motion.span
-                  key={`${word}-${index}`}
-                  className="inline-block mr-[0.25em]"
-                  initial={revealInitial}
-                  whileInView={revealAnimate}
-                  viewport={{ once: true }}
-                  transition={{ duration: prefersReducedMotion ? 0.01 : 0.5, delay: prefersReducedMotion ? 0 : index * 0.045, ease: easeOutExpo }}
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </motion.h1>
-            
-            <motion.p variants={itemVariants} className={`text-lg ${t.textMuted} max-w-xl`}>
-              {hero.subheading || "Full-Stack developer with 4+ years of expertise. I turn ideas into reliable high-performing web platforms, scrapers, and dynamic frontends."}
-            </motion.p>
-
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
-              <motion.a 
-                href={getWhatsAppUrl()} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.02 }}
-                whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                className="w-full sm:w-auto justify-center px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 text-white font-medium text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/20 flex items-center gap-2"
-                id="hero-cta-primary"
-              >
-                {hero.ctaTextPrimary || "Hire Me On WhatsApp"} <ArrowUpRight className="w-4 h-4" />
-              </motion.a>
-              <motion.a 
-                href={hero.ctaLinkSecondary || "#portfolio"} 
-                whileHover={prefersReducedMotion ? undefined : { y: -3, scale: 1.02 }}
-                whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                className={`w-full sm:w-auto justify-center px-6 py-3.5 rounded-xl ${isDark ? "bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300 hover:text-white" : "bg-white hover:bg-slate-100 border-slate-200 text-slate-800"} border font-medium text-sm transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 flex`}
-                id="hero-cta-secondary"
-              >
-                {hero.ctaTextSecondary || "View Work Portfolio"}
-              </motion.a>
-            </motion.div>
-
-            <motion.div variants={containerVariants} className={`grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-5 border-t ${isDark ? "border-slate-900" : "border-slate-200"} max-w-lg`}>
-              <motion.div variants={itemVariants}>
-                <AnimatedCounter value={4} suffix="+ Years" label="Real Results" className={`text-2xl md:text-3xl font-extrabold ${t.textBright}`} />
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <AnimatedCounter value={100} suffix="k+" label="We scraped" className={`text-2xl md:text-3xl font-extrabold ${t.textBright}`} />
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <AnimatedCounter value={10} suffix="+" label="Dev Team Leads" className={`text-2xl md:text-3xl font-extrabold ${t.textBright}`} />
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
-          <motion.div className="lg:col-span-5 relative flex justify-center" variants={itemVariants}>
-            <motion.div
-              className="relative w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
-              animate={prefersReducedMotion ? undefined : { y: [0, -6, 0] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {/* Outer decorative ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-indigo-500/20 animate-spin" style={{ animationDuration: '20s' }}></div>
-              <div className="absolute -inset-4 rounded-full border border-blue-500/10 animate-reverse-spin" style={{ animationDuration: '30s' }}></div>
-              
-              {/* Core Image styled card with neon glow */}
-              <div className={`absolute inset-4 rounded-3xl overflow-hidden ${t.bgCard} border-2 ${isDark ? "border-indigo-500/30" : "border-indigo-100"} shadow-2xl`}>
-                <img 
-                  src={profile.profileImage || "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600"} 
-                  alt="Ritesh Kumar — Full-Stack Developer" 
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.src = "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600";
-                  }}
-                  className="w-full h-full object-cover object-top opacity-95 hover:opacity-100 transition-all duration-500"
-                />
-                
-                {/* Floating indicator badge */}
-                <div className={`absolute bottom-4 left-4 right-4 ${isDark ? "bg-slate-950/95 border-slate-800" : "bg-white/95 border-slate-200 shadow-md"} border p-3.5 rounded-xl backdrop-blur-md flex items-center gap-3`}>
-                  <div className="w-3 h-3 bg-indigo-500 rounded-full animate-ping"></div>
-                  <div>
-                    <h4 className={`text-xs font-bold ${t.textBright} tracking-wide uppercase font-mono`}>Owner</h4>
-                    <p className={`text-xs ${t.textMuted}`}>{profile.name}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-
-        </motion.div>
-      </section>
+      <HeroBannerShowcase hero={hero} profile={profile} isDark={isDark} t={t} />
 
       {/* 2. ABOUT & STATS SECTION */}
-      <motion.section
-        id="about"
-        className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`}
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-      >
+      <MotionSection id="about" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
-            <motion.div className="lg:col-span-5" variants={itemVariants}>
+            <div className="lg:col-span-5" data-scroll-reveal>
               <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase mb-2`}>ABOUT THE ARCHITECT</p>
               <h2 className={`text-3xl font-bold ${t.textBright} mb-6`}>Expert in High-Performance Custom Applications</h2>
               
@@ -615,61 +358,61 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                     <MapPin className="w-4 h-4 text-slate-500" /> {profile.location}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-slate-500" />
-                    <a href={`mailto:${profile.email}`} className="hover:text-indigo-400 transition-colors">{profile.email}</a>
+                    <Mail className="w-4 h-4 text-slate-500" /> {profile.email}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Linkedin className="w-4 h-4 text-slate-500" />
-                    <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">
-                      {profile.linkedin ? "Connected Profile" : "linkedin.com/in/ritesh-kumar"}
-                    </a>
+                    <Linkedin className="w-4 h-4 text-slate-500" /> {profile.linkedin ? "Connected Profile" : "linkedin.com/in/ritesh-kumar"}
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div className="lg:col-span-7 flex flex-col justify-between" variants={containerVariants}>
-              <div>
+            <div className="lg:col-span-7 flex flex-col justify-between">
+              <div data-scroll-reveal>
                 <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase mb-2`}>MY CAPABILITIES</p>
                 <h2 className={`text-3xl font-bold ${t.textBright} mb-6`}>Why Client Agencies Partner with Me</h2>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <motion.div variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-indigo-500/30" : "bg-white border-slate-200 hover:border-indigo-300 shadow-sm"} transition-all space-y-2`}>
+              <MotionStaggerGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <MotionTechCard index={0} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300 shadow-sm"} transition-all space-y-2`}>
                   <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                     <CheckCircle className="w-4 h-4" />
                   </div>
                   <h4 className={`text-sm font-bold ${t.textBright} font-mono`}>Rapid Project Deliveries</h4>
                   <p className={`text-xs ${t.textMuted}`}>Strict on-time guarantees and structured progression milestones.</p>
-                </motion.div>
+                </MotionTechCard>
 
-                <motion.div variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-indigo-500/30" : "bg-white border-slate-200 hover:border-indigo-300 shadow-sm"} transition-all space-y-2`}>
+                <MotionTechCard index={1} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300 shadow-sm"} transition-all space-y-2`}>
                   <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
                     <Code className="w-4 h-4" />
                   </div>
                   <h4 className={`text-sm font-bold ${t.textBright} font-mono`}>Absolute Architectural Integrity</h4>
                   <p className={`text-xs ${t.textMuted}`}>Clean MVC design patterns utilizing robust validation algorithms.</p>
-                </motion.div>
+                </MotionTechCard>
 
-                <motion.div variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-indigo-500/30" : "bg-white border-slate-200 hover:border-indigo-300 shadow-sm"} transition-all space-y-2`}>
+                <MotionTechCard index={2} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300 shadow-sm"} transition-all space-y-2`}>
                   <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
                     <Workflow className="w-4 h-4" />
                   </div>
                   <h4 className={`text-sm font-bold ${t.textBright} font-mono`}>Flexible Scaling Capabilities</h4>
                   <p className={`text-xs ${t.textMuted}`}>Can work on isolated tasks or command our pool of 10+ devs.</p>
-                </motion.div>
+                </MotionTechCard>
 
-                <motion.div variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-indigo-500/30" : "bg-white border-slate-200 hover:border-indigo-300 shadow-sm"} transition-all space-y-2`}>
+                <MotionTechCard index={3} className={`p-5 rounded-xl ${isDark ? "bg-slate-950/50 border-slate-900 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300 shadow-sm"} transition-all space-y-2`}>
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
                     <Cpu className="w-4 h-4" />
                   </div>
                   <h4 className={`text-sm font-bold ${t.textBright} font-mono`}>Worldwide Timezone Syncs</h4>
                   <p className={`text-xs ${t.textMuted}`}>Full collaboration availability for USA, UK, & Europe partners.</p>
-                </motion.div>
-              </div>
+                </MotionTechCard>
+              </MotionStaggerGroup>
 
               {/* RESUME DOWNLOAD SECTION */}
-              <div className={`mt-8 p-5 rounded-2xl ${isDark ? "bg-indigo-900/15 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} flex flex-col sm:flex-row items-center justify-between gap-4`}>
+              <motion.div 
+                whileHover={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
+                className={`mt-8 p-5 rounded-2xl ${isDark ? "bg-indigo-900/15 border-indigo-500/20" : "bg-indigo-50 border-indigo-200"} flex flex-col sm:flex-row items-center justify-between gap-4`}
+              >
                 <div className="flex items-center gap-3">
                   <FileText className="w-8 h-8 text-indigo-400" />
                   <div>
@@ -677,659 +420,384 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                     <p className={`text-xs ${t.textMuted}`}>Get the full offline PDF specs & client histories.</p>
                   </div>
                 </div>
-                <a 
-                  href={resumeHref} 
-                  download="Ritesh-Kumar-Resume.pdf"
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition-colors text-white text-xs font-mono font-bold tracking-wide uppercase text-center"
-                  id="resume-download-btn"
-                >
-                  Download Info (PDF)
-                </a>
-              </div>
+                <MotionButton id="resume-download-btn">
+                  <a 
+                    href={profile.resumeUrl || "#"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition-colors text-white text-xs font-mono font-bold tracking-wide uppercase text-center block"
+                  >
+                    Download Info (PDF)
+                  </a>
+                </MotionButton>
+              </motion.div>
 
-            </motion.div>
+            </div>
           </div>
         </div>
-      </motion.section>
+      </MotionSection>
 
       {/* 3. SERVICES SECTION */}
-      <motion.section id="services" className="py-20 px-4 sm:px-6 lg:px-8" variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
-        <div className="max-w-7xl mx-auto space-y-12">
-          <motion.div className="text-center space-y-3" variants={itemVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase`}>WHAT WE DO BEST</p>
-            <h2 className={`text-3xl sm:text-4xl font-extrabold ${t.textBright}`}>Full-Stack Custom Services</h2>
-            <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-          </motion.div>
-
-          <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" variants={containerVariants}>
-            {services.map((srv: Service, idx: number) => (
-              <motion.div 
-                key={srv.id} 
-                variants={itemVariants}
-                whileHover={prefersReducedMotion ? undefined : { y: -6, scale: 1.01 }}
-                className={`p-6 rounded-2xl ${t.bgCard} border ${t.borderCard} ${t.bgCardHover} transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group`}
-              >
-                <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                    <motion.div whileHover={prefersReducedMotion ? undefined : { scale: [1, 1.12, 1] }} transition={{ duration: 0.35 }}>
-                      <RenderIcon name={srv.icon} />
-                    </motion.div>
-                  </div>
-                  <div>
-                    <p className={`font-mono text-xs ${t.textMuted} mb-1`}>Service {idx + 1}</p>
-                    <h3 className={`text-lg font-bold ${t.textBright} group-hover:text-indigo-400 transition-colors`}>{srv.title}</h3>
-                  </div>
-                  <p className={`text-xs ${t.textMuted} leading-relaxed`}>{srv.description}</p>
-                </div>
-                <div className={`pt-6 border-t ${isDark ? "border-slate-800/50" : "border-slate-100"} mt-6 flex items-center justify-between`}>
-                  <span className={`text-[10px] font-mono tracking-widest uppercase ${t.textMuted}`}>Active Support</span>
-                  <a href="#contact" className="text-xs text-indigo-400 hover:text-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded font-mono inline-flex items-center gap-1.5">
-                    Discuss Inquiry <ChevronRight className="w-3 h-3" />
-                  </a>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </motion.section>
+      <AnimatedServicesShowcase services={services} isDark={isDark} t={t} />
 
       {/* 4. SKILLS SECTION */}
-      <motion.section id="skills" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`} variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
+      <MotionSection id="skills" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-7xl mx-auto space-y-12">
           
-          <motion.div className="text-center space-y-3 col-span-12" variants={itemVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase`}>TECHNICAL MATRIX</p>
-            <h2 className={`text-3xl font-extrabold ${t.textBright}`}>Skills & Development Stack</h2>
-            <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-          </motion.div>
+          {/* HEADER */}
+          <div className="flex flex-col items-center text-center space-y-3">
+            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase`}>EVOLUTION & MASTERY</p>
+            <h2 className={`text-3xl sm:text-4xl font-extrabold ${t.textBright}`}>Skills & Development Stack</h2>
+            <div className="w-16 h-1 bg-indigo-500 rounded-full"></div>
+            <p className={`text-xs sm:text-sm ${t.textMuted} max-w-2xl`}>
+              Explore the step-by-step learning progression tree or filter through full production stack competencies.
+            </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
-            <motion.div className="lg:col-span-4 space-y-4" variants={itemVariants}>
-              <h3 className={`text-2xl font-bold ${t.textBright}`}>Production Stack Core Competences</h3>
-              <p className={`text-xs ${t.textMuted} leading-relaxed`}>
-                Ritesh has refined a reliable modern ecosystem centered around fast state managers on the browser client, combined with robust structured database layers.
-              </p>
-              
-              <div className={`p-4 rounded-xl ${t.bgCardAlt} border ${t.borderCard} space-y-3`}>
-                <span className={`font-mono text-[10px] uppercase font-bold tracking-wider ${t.textMuted}`}>Key Focus Highlights</span>
-                <ul className="text-xs space-y-2 text-slate-300">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className={isDark ? "text-slate-300" : "text-slate-700"}>Web crawlers with CAPTCHA bypasses</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className={isDark ? "text-slate-300" : "text-slate-700"}>Robust PHP Symfony dependency logs</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className={isDark ? "text-slate-300" : "text-slate-700"}>NextJS headless Shopify tunnels</span>
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
+            {/* VIEW MODE TOGGLES */}
+            <div className="pt-2 flex items-center justify-center gap-2 flex-wrap">
+              <button
+                onClick={() => setSkillViewMode("both")}
+                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
+                  skillViewMode === "both"
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                    : `${isDark ? "bg-slate-900 text-slate-400 hover:text-white" : "bg-white text-slate-600 hover:text-slate-900"} border ${t.borderCard}`
+                }`}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" /> Combined Overview
+              </button>
 
-            <div className="lg:col-span-8">
-              <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-4" variants={containerVariants}>
-                {skills.map((sk: Skill) => (
-                  <motion.div key={sk.id} variants={itemVariants} className={`p-4 rounded-xl ${t.bgCard} border ${t.borderCard} space-y-2`}>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <div className="flex items-start sm:items-center gap-2 min-w-0">
-                        <span className="mt-1.5 sm:mt-0 w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>
-                        <span className={`text-sm font-bold ${t.textBright} min-w-0 break-words leading-snug`}>{sk.name}</span>
-                      </div>
-                      <span className={`font-mono text-xs ${t.textIndigo} font-bold shrink-0`}>{sk.percentage}%</span>
-                    </div>
-                    {/* Progress indicator */}
-                    <div className={`w-full h-1.5 ${isDark ? "bg-slate-900" : "bg-slate-150"} rounded-full overflow-hidden`}>
-                      <motion.div 
-                        className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full"
-                        initial={{ width: prefersReducedMotion ? `${sk.percentage}%` : "0%" }}
-                        whileInView={{ width: `${sk.percentage}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: prefersReducedMotion ? 0.01 : 0.9, ease: easeOutExpo }}
-                      />
-                    </div>
-                    <span className={`inline-block text-[10px] font-mono ${isDark ? "text-slate-500 bg-slate-900" : "text-slate-600 bg-slate-100 border border-slate-200/60"} px-2 py-0.5 rounded uppercase`}>
-                      {sk.category}
-                    </span>
-                  </motion.div>
-                ))}
-              </motion.div>
+              <button
+                onClick={() => setSkillViewMode("flow")}
+                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
+                  skillViewMode === "flow"
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                    : `${isDark ? "bg-slate-900 text-slate-400 hover:text-white" : "bg-white text-slate-600 hover:text-slate-900"} border ${t.borderCard}`
+                }`}
+              >
+                <GitBranch className="w-3.5 h-3.5" /> Step-by-Step Flow Tree
+              </button>
+
+              <button
+                onClick={() => setSkillViewMode("matrix")}
+                className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
+                  skillViewMode === "matrix"
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                    : `${isDark ? "bg-slate-900 text-slate-400 hover:text-white" : "bg-white text-slate-600 hover:text-slate-900"} border ${t.borderCard}`
+                }`}
+              >
+                <Grid className="w-3.5 h-3.5" /> Skill Matrix Cards
+              </button>
             </div>
-
           </div>
 
+          {/* STEP-BY-STEP LEARNING FLOW TREE */}
+          {(skillViewMode === "flow" || skillViewMode === "both") && (
+            <div className="space-y-6">
+              <SkillFlowDiagram isDark={isDark} t={t} />
+            </div>
+          )}
+
+          {/* SKILL MATRIX CARDS WITH CATEGORY FILTERING & SEARCH */}
+          {(skillViewMode === "matrix" || skillViewMode === "both") && (
+            <div className="pt-4">
+              <InteractiveSkillMatrix skills={skills} isDark={isDark} t={t} />
+            </div>
+          )}
+
         </div>
-      </motion.section>
+      </MotionSection>
 
       {/* 5. PORTFOLIO/PROJECTS SECTION */}
-      <motion.section id="portfolio" className="py-20 px-4 sm:px-6 lg:px-8" variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.16 }}>
+      <AnimatedProjectsShowcase projects={projects} isDark={isDark} t={t} />
+
+      {/* 6. EXPERIENCES & RESUME TIME-LINE */}
+      <AnimatedTimeline experiences={experience} education={education} certifications={certifications} isDark={isDark} t={t} />
+
+      {/* 7. CLIENT BUZZ / TESTIMONIALS */}
+      <MotionSection id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-12">
           
-          <motion.div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6" variants={itemVariants}>
-            <div className="space-y-3">
-              <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase`}>PROVEN HISTORIES</p>
-              <h2 className={`text-3xl font-extrabold ${t.textBright}`}>Interactive Work Showcase</h2>
-              <div className="w-12 h-1 bg-indigo-500 rounded-full"></div>
+          <div className="text-center space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-mono text-[11px] font-bold uppercase tracking-wider">
+              <Quote className="w-3.5 h-3.5" /> CLIENT REVIEWS & VERIFIED PARTNERSHIPS
             </div>
+            <h2 className={`text-3xl sm:text-4xl font-extrabold ${t.textBright}`}>
+              Feedback From Enterprise Partners
+            </h2>
+            <p className={`text-xs sm:text-sm ${t.textMuted} max-w-2xl mx-auto`}>
+              Verified testimonials from engineering directors, CTOs, and product managers across the UK, US, Canada, Australia, and Singapore.
+            </p>
+            <div className="w-16 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 mx-auto rounded-full"></div>
+          </div>
 
-            {/* Filter buttons */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2 max-w-full md:flex-wrap md:overflow-visible">
-              {projectCategories.map((cat: string) => (
-                <button 
-                  key={cat}
-                  onClick={() => {
-                    setFilterCategory(cat);
-                    trackVisit(`/portfolio/${cat.toLowerCase().replace(/ /g, "-")}`);
-                  }}
-                  className={`relative shrink-0 min-h-11 px-3.5 py-1.5 rounded-lg text-xs font-mono transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 ${
-                    filterCategory === cat 
-                      ? "text-white font-bold" 
-                      : isDark 
-                        ? "bg-slate-900 hover:bg-slate-800 text-slate-400" 
-                        : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 shadow-xs"
-                  }`}
-                >
-                  {filterCategory === cat && (
-                    <motion.span
-                      layoutId="active-project-filter"
-                      className="absolute inset-0 rounded-lg bg-indigo-600"
-                      transition={{ duration: prefersReducedMotion ? 0.01 : 0.25, ease: "easeOut" }}
-                    />
-                  )}
-                  <span className="relative z-10">{cat}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* PROJECT GRID */}
-          <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid" variants={containerVariants}>
-            <AnimatePresence mode="popLayout">
-            {projectsToDisplay.map((proj: Project) => (
-              <motion.div 
-                key={proj.id}
-                layout
-                variants={itemVariants}
-                initial="hidden"
-                animate="show"
-                exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-                whileHover={prefersReducedMotion ? undefined : { y: -6 }}
-                className={`group rounded-2xl ${t.bgCard} border ${t.borderCard} overflow-hidden flex flex-col justify-between ${t.bgCardHover} transition-all duration-300 hover:-translate-y-1`}
+          <MotionStaggerGroup className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {(showAllTestimonials ? testimonials : testimonials.slice(0, 4)).map((test: Testimonial, idx: number) => (
+              <MotionTechCard 
+                key={test.id || idx} 
+                index={idx} 
+                className={`p-6 sm:p-7 rounded-3xl ${t.bgCard} border ${t.borderCard} hover:border-indigo-500/40 transition-all relative flex flex-col justify-between shadow-xl group hover:-translate-y-1`}
               >
-                <div>
-                  {/* Thumbnail */}
-                  <div className={`relative aspect-video overflow-hidden ${isDark ? "bg-slate-950" : "bg-slate-100"}`}>
-                    <img 
-                      src={proj.thumbnail || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"} 
-                      alt={proj.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {proj.featured && (
-                      <span className="absolute top-3 left-3 bg-indigo-600 text-white text-[9px] font-mono tracking-widest uppercase font-bold py-1 px-2 rounded">
-                        ★ Featured App
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="p-5 space-y-3">
-                    <span className={`font-mono text-[10px] ${t.textIndigo} uppercase tracking-widest font-bold`}>
-                      {proj.category}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-1">
+                      {Array.from({ length: test.rating || 5 }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-[10px] font-bold flex items-center gap-1">
+                      <ShieldCheck className="w-3 h-3 text-emerald-400" /> Verified Client
                     </span>
-                    <h3 className={`text-lg font-bold ${t.textBright} group-hover:text-indigo-400 transition-colors`}>
-                      {proj.title}
-                    </h3>
-                    <p className={`text-xs ${t.textMuted} line-clamp-3`}>
-                      {proj.description}
-                    </p>
                   </div>
+
+                  <p className={`text-xs sm:text-sm ${isDark ? "text-slate-200" : "text-slate-800"} leading-relaxed italic`}>
+                    "{test.message}"
+                  </p>
                 </div>
 
-                <div className="p-5 pt-0">
-                  {/* Tech tags */}
-                  <div className="flex flex-wrap gap-1 mb-5">
-                    {proj.techStack.map((tech: string, i: number) => (
-                      <span key={i} className={`text-[9px] font-mono ${isDark ? "bg-slate-950 text-slate-400" : "bg-slate-150 text-slate-700"} px-2 py-0.5 rounded`}>
-                        {tech}
-                      </span>
-                    ))}
+                <div className={`pt-5 border-t ${isDark ? "border-slate-800/60" : "border-slate-200/80"} mt-6 flex items-center gap-3.5`}>
+                  <div className="w-11 h-11 rounded-full overflow-hidden bg-slate-900 border-2 border-indigo-500/30 shrink-0 shadow-md">
+                    <img 
+                      src={test.photo || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"} 
+                      alt={test.clientName} 
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200";
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    />
                   </div>
-
-                  <div className={`pt-4 border-t ${t.borderCard} flex items-center justify-between`}>
-                    {isUsableExternalUrl(proj.projectUrl) ? (
-                      <a 
-                        href={proj.projectUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`text-xs ${isDark ? "text-white" : "text-slate-900"} hover:text-indigo-400 font-mono inline-flex items-center gap-1 hover:underline group/link`}
-                      >
-                        View Project Details 
-                        <ArrowUpRight className="w-3 h-3 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-                      </a>
-                    ) : (
-                      <button 
-                        onClick={() => {
-                          setSelectedProject(proj);
-                          trackVisit(`/projects/${proj.slug}`);
-                        }}
-                        className={`text-xs ${isDark ? "text-white" : "text-slate-900"} hover:text-indigo-400 font-mono inline-flex items-center gap-1 hover:underline`}
-                      >
-                        View Project Details <ArrowUpRight className="w-3 h-3" />
-                      </button>
-                    )}
-
-                    {isUsableExternalUrl(proj.projectUrl) && (
-                      <a 
-                        href={proj.projectUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className={`text-[10px] ${t.textMuted} hover:text-indigo-500 transition-colors`}
-                      >
-                        Live Link ↗
-                      </a>
-                    )}
+                  <div className="space-y-0.5">
+                    <h4 className={`text-xs sm:text-sm font-bold ${t.textBright}`}>{test.clientName}</h4>
+                    <p className={`text-[11px] font-mono ${t.textIndigo} font-semibold`}>{test.company}</p>
                   </div>
+                  <MessageSquare className="w-8 h-8 text-indigo-500/10 ml-auto pointer-events-none" />
                 </div>
-
-              </motion.div>
+              </MotionTechCard>
             ))}
-            </AnimatePresence>
-          </motion.div>
+          </MotionStaggerGroup>
 
-          {/* SHOW MORE PAGINATION */}
-          {filteredProjects.length > 6 && (
-            <div className="flex justify-center pt-8">
+          {/* SHOW MORE / SHOW LESS TOGGLE BUTTON */}
+          {testimonials.length > 4 && (
+            <div className="flex justify-center pt-4">
               <button
-                onClick={() => {
-                  setShowAllProjects(!showAllProjects);
-                  trackVisit(showAllProjects ? "/portfolio/show-less" : "/portfolio/show-more");
-                }}
-                className={`px-6 py-2.5 rounded-xl ${isDark ? "bg-slate-900 hover:bg-slate-800 border-slate-800 text-white" : "bg-white hover:bg-slate-100 border-slate-200 text-slate-800"} border font-mono text-xs font-bold tracking-wider uppercase transition-all duration-300 shadow-md hover:shadow-indigo-500/10`}
+                onClick={() => setShowAllTestimonials(!showAllTestimonials)}
+                className={`px-8 py-3.5 rounded-2xl ${
+                  isDark ? "bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-100" : "bg-white hover:bg-slate-100 border-slate-300 text-slate-800"
+                } border font-mono text-xs font-bold transition-all shadow-xl hover:shadow-indigo-500/10 flex items-center gap-3 cursor-pointer group`}
               >
-                {showAllProjects ? "Show Less" : `Show More Projects (${filteredProjects.length - 6} more)`}
+                <span>
+                  {showAllTestimonials 
+                    ? "Show Fewer Testimonials" 
+                    : `Show More Enterprise Testimonials (+${testimonials.length - 4} More Client Reviews)`
+                  }
+                </span>
+                <ChevronDown className={`w-4 h-4 text-indigo-400 transition-transform duration-300 ${showAllTestimonials ? "rotate-180" : "group-hover:translate-y-0.5"}`} />
               </button>
             </div>
           )}
 
         </div>
-      </motion.section>
-
-      {/* 6. EXPERIENCES & RESUME TIME-LINE */}
-      <motion.section id="experience" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`} variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }}>
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <motion.div className="text-center space-y-3" variants={itemVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase font-bold`}>CAREER LANDSCAPE</p>
-            <h2 className={`text-3xl font-extrabold ${t.textBright}`}>Professional Experience & Background</h2>
-            <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            {/* WORK COLUMN */}
-            <motion.div className="space-y-6" variants={containerVariants}>
-              <h3 className={`text-xl font-bold ${t.textBright} flex items-center gap-2`}>
-                <Briefcase className="w-5 h-5 text-indigo-400" /> Work History
-              </h3>
-              
-              <div className={`space-y-6 border-l ${isDark ? "border-slate-800" : "border-slate-200"} pl-5 sm:pl-6 relative`}>
-                {experience.map((exp: Experience, idx: number) => (
-                  <motion.div key={exp.id || idx} className="relative space-y-2" variants={itemVariants}>
-                    {/* Bullet marker */}
-                    <div className={`absolute -left-[27px] sm:-left-[31px] top-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full ${t.bulletBg} flex items-center justify-center`}>
-                      <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                    </div>
-
-                    <span className="inline-block text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
-                      {exp.startDate} - {exp.endDate}
-                    </span>
-
-                    <h4 className={`text-base font-bold ${t.textBright}`}>{exp.role}</h4>
-                    <p className={`text-xs font-mono ${t.textMuted}`}>{exp.companyName} | {exp.location}</p>
-                    <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"} leading-relaxed`}>{exp.description}</p>
-                    
-                    <div className="flex flex-wrap gap-1 pt-2">
-                      {exp.techStack?.map((tag: string, i: number) => (
-                        <span key={i} className={`text-[9px] font-mono ${isDark ? "bg-slate-900 text-slate-400" : "bg-slate-100 text-slate-600 border border-slate-200/60"} px-2.5 py-0.5 rounded`}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* ACADEMICS & RECOGNITIONS */}
-            <motion.div className="space-y-12" variants={containerVariants}>
-              <div className="space-y-6">
-                <h3 className={`text-xl font-bold ${t.textBright} flex items-center gap-2`}>
-                  <GraduationCap className="w-5 h-5 text-indigo-400" /> Education Background
-                </h3>
-                
-                <div className="space-y-4">
-                  {education.map((edu: Education, idx: number) => (
-                    <motion.div key={edu.id || idx} variants={itemVariants} className={`p-5 rounded-xl ${t.bgCardAlt} border ${t.borderCard} space-y-2`}>
-                      <span className={`font-mono text-[10px] ${t.textMuted}`}>{edu.year}</span>
-                      <h4 className={`text-sm font-bold ${t.textBright}`}>{edu.degree}</h4>
-                      <p className={`text-xs ${t.textIndigo} font-mono`}>{edu.institute}</p>
-                      <p className={`text-xs ${t.textMuted} leading-normal`}>{edu.description}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* CERTIFICATES MODULE */}
-              <div id="certifications" className="space-y-6">
-                <h3 className={`text-xl font-bold ${t.textBright} flex items-center gap-2`}>
-                  <Award className="w-5 h-5 text-indigo-400" /> Certifications & Achievements
-                </h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {certifications.map((cert: Certification) => (
-                    <motion.div key={cert.id} variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -3 }} className={`p-4 rounded-xl ${isDark ? "bg-slate-950/40 border-slate-900 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300 shadow-xs"} transition-all flex items-start gap-3`}>
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/15 flex items-center justify-center text-indigo-300 mt-0.5">
-                        <Award className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className={`text-[10px] font-mono ${t.textMuted}`}>{cert.year}</span>
-                        <h4 className={`text-xs font-bold ${t.textBright} leading-snug`}>{cert.name}</h4>
-                        <p className={`text-[10px] ${t.textMuted}`}>{cert.issuer}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-            </motion.div>
-
-          </div>
-
-        </div>
-      </motion.section>
-
-      {/* 7. CLIENT BUZZ / TESTIMONIALS */}
-      <motion.section id="testimonials" className="py-20 px-4 sm:px-6 lg:px-8" variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <motion.div className="text-center space-y-3" variants={itemVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase font-bold`}>CLIENT HEARSAYS</p>
-            <h2 className={`text-3xl font-extrabold ${t.textBright}`}>Feedback From Enterprise Partners</h2>
-            <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-          </motion.div>
-
-          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6" variants={containerVariants}>
-            {testimonials.map((test: Testimonial) => (
-              <motion.div key={test.id} variants={itemVariants} whileHover={prefersReducedMotion ? undefined : { y: -5 }} className={`p-6 rounded-2xl ${t.bgCard} border ${t.borderCard} hover:border-indigo-500/20 transition-all relative flex flex-col justify-between`}>
-                
-                <div className="space-y-4">
-                  <div className="flex gap-1">
-                    {Array.from({ length: test.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className={`text-xs ${isDark ? "text-slate-300" : "text-slate-700"} leading-relaxed italic`}>
-                    "{test.message}"
-                  </p>
-                </div>
-
-                <div className={`pt-6 border-t ${isDark ? "border-slate-800/50" : "border-slate-100"} mt-6 flex items-center gap-3`}>
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-800">
-                    <img src={test.photo} alt={test.clientName} className="w-full h-full object-cover" />
-                  </div>
-                  <div>
-                    <h4 className={`text-xs font-bold ${t.textBright}`}>{test.clientName}</h4>
-                    <p className={`text-[10px] font-mono ${t.textIndigo}`}>{test.company}</p>
-                  </div>
-                  <MessageSquare className="w-6 h-6 text-indigo-500/10 ml-auto absolute bottom-6 right-6" />
-                </div>
-
-              </motion.div>
-            ))}
-          </motion.div>
-
-        </div>
-      </motion.section>
+      </MotionSection>
 
       {/* 8. BLOG & KNOWLEDGES SECTION */}
-      <motion.section id="blog" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`} variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }}>
-        <div className="max-w-7xl mx-auto space-y-12">
+      <MotionSection id="blog" className={`py-20 ${t.bgSectionAlt} px-4 sm:px-6 lg:px-8`}>
+        <div className="max-w-7xl mx-auto space-y-10">
           
-          <motion.div className="text-center space-y-3" variants={itemVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase font-bold text-center`}>KNOWLEDGE SHARING</p>
-            <h2 className={`text-3xl font-extrabold ${t.textBright} text-center`}>Ritesh's Architectural Blog</h2>
-            <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
-          </motion.div>
-
-          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-6" variants={containerVariants}>
-            {blogs.map((post: Blog) => (
-              <motion.div 
-                key={post.id}
-                variants={itemVariants}
-                whileHover={prefersReducedMotion ? undefined : { y: -5 }}
-                className={`group p-5 rounded-2xl ${t.bgCard} border ${t.borderCard} hover:border-slate-800 transition-all flex flex-col justify-between`}
-              >
-                <div className="space-y-4">
-                  <div className={`aspect-video w-full rounded-xl overflow-hidden ${isDark ? "bg-slate-950" : "bg-slate-100"} relative`}>
-                    <img 
-                      src={post.featuredImage || "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800"} 
-                      alt={post.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <span className="absolute bottom-3 left-3 bg-slate-950/90 text-indigo-400 text-[10px] font-mono px-2.5 py-1 rounded">
-                      {post.category}
-                    </span>
-                  </div>
-
-                  <span className={`font-mono text-[10px] ${t.textMuted} uppercase`}>{post.createdAt}</span>
-                  <h3 className={`text-lg font-bold ${t.textBright} group-hover:text-indigo-400 transition-colors`}>
-                    {post.title}
-                  </h3>
-                  <p className={`text-xs ${t.textMuted} line-clamp-2`}>
-                    {post.content}
-                  </p>
-                </div>
-
-                <div className={`pt-6 border-t ${isDark ? "border-slate-800/80" : "border-slate-100"} mt-6 flex items-center justify-between`}>
-                  <button 
-                    onClick={() => {
-                      setSelectedBlog(post);
-                      trackVisit(`/blog/${post.slug}`);
-                    }}
-                    className="text-xs font-mono font-bold text-indigo-400 hover:text-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded"
-                  >
-                    Read Full Blueprint Article ↗
-                  </button>
-                  <div className="flex gap-1">
-                    {post.tags?.slice(0, 2).map((tag, i) => (
-                      <span key={i} className={`text-[9px] font-mono ${isDark ? "bg-slate-950 text-slate-500" : "bg-slate-100 text-slate-600 border border-slate-200/60"} px-2 py-0.5 rounded`}>
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-              </motion.div>
-            ))}
-          </motion.div>
-
-        </div>
-      </motion.section>
-
-      {/* 9. CONTACT & HIRE ME FORM */}
-      <motion.section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 relative" variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }}>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
-          <motion.div className="lg:col-span-5 space-y-6" variants={containerVariants}>
-            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase font-bold`}>READY TO COMMENCE?</p>
-            <h2 className={`text-4xl font-extrabold ${t.textBright}`}>Let's Discuss Your Solutions Blueprint</h2>
-            <p className={`text-xs ${t.textMuted} leading-relaxed`}>
-              Have an automation challenge, a relational database scope, or look to acquire remote web talent? Let me know details and I'll send an initial structural diagnostic estimate.
+          <div className="text-center space-y-3">
+            <p className={`font-mono ${t.textIndigo} text-xs tracking-widest uppercase font-bold text-center`}>KNOWLEDGE SHARING & ARCHITECTURE</p>
+            <h2 className={`text-3xl sm:text-4xl font-extrabold ${t.textBright} text-center`}>Ritesh's Architectural Blog</h2>
+            <div className="w-16 h-1 bg-gradient-to-r from-indigo-500 to-cyan-500 mx-auto rounded-full"></div>
+            <p className={`text-xs sm:text-sm ${t.textMuted} max-w-2xl mx-auto`}>
+              Technical deep dives into high-concurrency Node.js, PHP Symfony backends, web scraping strategies, and performance engineering.
             </p>
+          </div>
 
-            <div className="space-y-4 pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase">Primary Inbox</h4>
-                  <a href={`mailto:${profile.email}`} className={`text-xs ${isDark ? "text-slate-200 hover:text-indigo-300" : "text-slate-800 font-medium hover:text-indigo-600"} transition-colors`}>{profile.email}</a>
-                </div>
+          {/* BLOG CONTROLS (shown when expanded) */}
+          {showAllBlogs && (
+            <div className={`p-4 sm:p-5 rounded-2xl ${t.bgCard} border ${t.borderCard} shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4`}>
+              {/* Category Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 no-scrollbar w-full md:w-auto">
+                {["All", "PHP & Symfony", "Web Scraping", "Backend Architecture", "Frontend Engineering", "Python Automation", "Database Systems", "AI Systems"].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setBlogCategory(cat)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap transition-all ${
+                      blogCategory === cat
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : `${isDark ? "bg-slate-900/80 text-slate-400 hover:text-white border-slate-800" : "bg-slate-100 text-slate-600 hover:text-slate-900 border-slate-200"} border`
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                  <Phone className="w-5 h-5 hover:animate-shake" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase">WhatsApp Channel</h4>
-                  <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer" className={`text-xs ${isDark ? "text-slate-200 hover:text-indigo-300" : "text-slate-800 font-medium hover:text-indigo-600"} transition-colors`}>{profile.whatsapp || `+${WHATSAPP_PHONE}`}</a>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-mono font-bold text-slate-500 uppercase">Location Basis</h4>
-                  <p className={`text-xs ${isDark ? "text-slate-200" : "text-slate-800 font-medium"}`}>{profile.location}</p>
-                </div>
+              {/* Search input */}
+              <div className="relative w-full md:w-64">
+                <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search articles & tags..."
+                  value={blogSearchQuery}
+                  onChange={(e) => setBlogSearchQuery(e.target.value)}
+                  className={`w-full pl-9 pr-8 py-1.5 rounded-xl text-xs font-mono ${t.inputBg} border transition-all outline-none focus:ring-2 focus:ring-indigo-500/40`}
+                />
+                {blogSearchQuery && (
+                  <button
+                    onClick={() => setBlogSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-mono"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
+          )}
 
-            <div className={`p-5 rounded-2xl ${isDark ? "bg-indigo-900/10 border-indigo-500/20" : "bg-indigo-50 border-indigo-100"} border space-y-2`}>
-              <h4 className="text-xs font-mono font-bold text-indigo-400 uppercase">📢 Lead Dev Advisory</h4>
-              <p className={`text-xs ${t.textMuted}`}>
-                To guarantee maximum execution precision, I schedule face-time Zoom diagnostic calls for scope requests over $2.5k.
-              </p>
-            </div>
-          </motion.div>
+          {/* BLOG POSTS GRID */}
+          {(() => {
+            const filteredBlogs = blogs.filter((post: Blog) => {
+              const matchesCat = blogCategory === "All" || post.category === blogCategory;
+              const matchesSearch = !blogSearchQuery.trim() ||
+                post.title.toLowerCase().includes(blogSearchQuery.toLowerCase()) ||
+                post.content.toLowerCase().includes(blogSearchQuery.toLowerCase()) ||
+                post.tags?.some(tag => tag.toLowerCase().includes(blogSearchQuery.toLowerCase()));
+              return matchesCat && matchesSearch;
+            });
 
-          <motion.div className="lg:col-span-7" variants={itemVariants}>
-            <div className={`p-6 sm:p-8 rounded-3xl ${t.bgCard} border ${t.borderCard} shadow-xl space-y-6`}>
-              <h3 className={`text-xl font-bold ${t.textBright} font-mono`}>Submit Structural Inquiry Form</h3>
-              
-              <motion.form onSubmit={handleContactSubmit} className="space-y-4" id="consultation-form" variants={containerVariants}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className={`block text-xs font-mono ${t.textMuted} uppercase`}>Your Name *</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={contactForm.name}
-                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      placeholder="e.g. David Harrison"
-                      className={`w-full min-h-11 border ${isDark ? "bg-slate-950 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-800"} focus:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded-xl px-4 py-3 text-xs`}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className={`block text-xs font-mono ${t.textMuted} uppercase`}>Your Email *</label>
-                    <input 
-                      type="email" 
-                      required
-                      value={contactForm.email}
-                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      placeholder="e.g. david@media.co.uk"
-                      className={`w-full min-h-11 border ${isDark ? "bg-slate-950 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-800"} focus:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded-xl px-4 py-3 text-xs`}
-                    />
-                  </div>
+            const displayedBlogs = showAllBlogs || blogSearchQuery.trim() || blogCategory !== "All"
+              ? filteredBlogs
+              : filteredBlogs.slice(0, 2);
+
+            if (displayedBlogs.length === 0) {
+              return (
+                <div className={`p-8 text-center rounded-2xl ${t.bgCard} border ${t.borderCard}`}>
+                  <p className={`text-xs font-mono ${t.textMuted}`}>No architectural blogs match your search criteria.</p>
+                  <button
+                    onClick={() => { setBlogCategory("All"); setBlogSearchQuery(""); }}
+                    className="mt-3 px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-mono font-bold"
+                  >
+                    Reset Filters
+                  </button>
                 </div>
+              );
+            }
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className={`block text-xs font-mono ${t.textMuted} uppercase`}>Phone (Optional)</label>
-                    <input 
-                      type="text" 
-                      value={contactForm.phone}
-                      onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                      placeholder="e.g. +44 7911 XXXXXX"
-                      className={`w-full min-h-11 border ${isDark ? "bg-slate-950 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-800"} focus:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded-xl px-4 py-3 text-xs`}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className={`block text-xs font-mono ${t.textMuted} uppercase`}>Subject Topic</label>
-                    <input 
-                      type="text" 
-                      value={contactForm.subject}
-                      onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
-                      placeholder="e.g. Python scraper setup"
-                      className={`w-full min-h-11 border ${isDark ? "bg-slate-950 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-800"} focus:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded-xl px-4 py-3 text-xs`}
-                    />
-                  </div>
-                </div>
+            return (
+              <div className="space-y-8">
+                <MotionStaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {displayedBlogs.map((post: Blog, idx: number) => (
+                    <MotionProjectCard 
+                      key={post.id}
+                      index={idx}
+                      className={`group p-6 rounded-3xl ${t.bgCard} border ${t.borderCard} hover:border-indigo-500/40 transition-all shadow-xl flex flex-col justify-between relative overflow-hidden`}
+                    >
+                      <div className="space-y-4">
+                        <div className={`aspect-video w-full rounded-2xl overflow-hidden ${isDark ? "bg-slate-950" : "bg-slate-100"} relative`}>
+                          <img 
+                            src={post.featuredImage || "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800"} 
+                            alt={post.title} 
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800";
+                            }}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60" />
+                          <span className="absolute bottom-3 left-3 bg-slate-950/90 text-indigo-400 text-[10px] font-mono px-3 py-1 rounded-full border border-slate-800 font-bold">
+                            {post.category}
+                          </span>
+                        </div>
 
-                <div className="space-y-2">
-                  <label className={`block text-xs font-mono ${t.textMuted} uppercase`}>Message details *</label>
-                  <textarea 
-                    rows={4}
-                    required
-                    value={contactForm.message}
-                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                    placeholder="Describe your goals, tech expectations, timeline bounds..."
-                    className={`w-full border ${isDark ? "bg-slate-950 border-slate-800 text-white" : "bg-white border-slate-200 text-slate-800"} focus:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 rounded-xl p-4 text-xs resize-none`}
-                  ></textarea>
-                </div>
+                        <div className="flex items-center justify-between text-[10px] font-mono">
+                          <span className={`${t.textMuted} uppercase`}>Published {post.createdAt}</span>
+                          <span className="text-indigo-400 font-bold">5 min read</span>
+                        </div>
 
-                {contactNotification && (
-                  <div className={`p-4 rounded-xl text-xs font-mono ${
-                    contactNotification.type === "success" 
-                      ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-300" 
-                      : "bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300"
-                  }`} id="form-notification">
-                    {contactNotification.text}
+                        <h3 className={`text-xl font-bold ${t.textBright} group-hover:text-indigo-400 transition-colors leading-snug`}>
+                          {post.title}
+                        </h3>
+                        <p className={`text-xs ${t.textMuted} leading-relaxed line-clamp-3`}>
+                          {post.content}
+                        </p>
+                      </div>
+
+                      <div className={`pt-5 border-t ${isDark ? "border-slate-800/80" : "border-slate-100"} mt-6 flex items-center justify-between`}>
+                        <button 
+                          onClick={() => {
+                            setSelectedBlog(post);
+                            trackVisit(`/blog/${post.slug}`);
+                          }}
+                          className="text-xs font-mono font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 group/btn"
+                        >
+                          <span>Read Full Blueprint Article</span>
+                          <ArrowUpRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                        </button>
+                        <div className="flex gap-1">
+                          {post.tags?.slice(0, 2).map((tag, i) => (
+                            <span key={i} className={`text-[9px] font-mono ${isDark ? "bg-slate-950 text-slate-400 border border-slate-800" : "bg-slate-100 text-slate-600 border border-slate-200/60"} px-2 py-0.5 rounded-full`}>
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                    </MotionProjectCard>
+                  ))}
+                </MotionStaggerGroup>
+
+                {/* SHOW MORE / SHOW FEWER BLOGS ACTION BUTTON */}
+                {!showAllBlogs && !blogSearchQuery.trim() && blogCategory === "All" && blogs.length > 2 && (
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={() => setShowAllBlogs(true)}
+                      className="px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-xl shadow-indigo-500/25 transition-all flex items-center gap-2 cursor-pointer group"
+                    >
+                      <span>Show More Architectural Blogs ({blogs.length - 2}+ More Articles)</span>
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </button>
                   </div>
                 )}
 
-                <motion.button 
-                  type="submit" 
-                  disabled={submittingContact}
-                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
-                  className="w-full min-h-11 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 text-white font-mono font-bold tracking-wider text-xs uppercase transition-all flex items-center justify-center gap-2"
-                  id="submit-contact-btn"
-                >
-                  {submittingContact ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Encrypting Submission...
-                    </>
-                  ) : (
-                    <>
-                      Transmit Inquiry <Send className="w-3.5 h-3.5" />
-                    </>
-                  )}
-                </motion.button>
-              </motion.form>
-            </div>
-          </motion.div>
+                {showAllBlogs && !blogSearchQuery.trim() && blogCategory === "All" && blogs.length > 2 && (
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={() => setShowAllBlogs(false)}
+                      className={`px-6 py-3 rounded-2xl ${
+                        isDark ? "bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-800" : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+                      } border font-mono text-xs font-bold transition-all flex items-center gap-2 cursor-pointer`}
+                    >
+                      <span>Collapse Blog Articles</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
         </div>
-      </motion.section>
+      </MotionSection>
+
+      {/* 9. CONTACT & HIRE ME FORM */}
+      <AnimatedContactTerminal profile={profile} isDark={isDark} t={t} onSubmitContact={handleContactSubmit} />
 
       {/* FOOTER */}
-      </main>
-
       <footer className={`${isDark ? "bg-slate-950 border-slate-900" : "bg-slate-100 border-slate-200"} border-t py-16 px-4 sm:px-6 lg:px-8`}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           
           <div className="space-y-4">
             <span className={`font-mono text-base font-extrabold ${t.textBright}`}>
               {site.logoText || "Ritesh"}{" "}
-              <span className={`${t.textIndigo} font-light`}>{site.logoSubtext || "Kumar"}</span>
+              <span className="text-indigo-400 font-light">{site.logoSubtext || "Kumar"}</span>
             </span>
             <p className={`text-xs ${t.textMuted} leading-relaxed md:max-w-xs`}>
               Providing modern enterprise full-stack development, headless API integrations, and robust automated workflows contextually since 2021.
             </p>
             <div className="flex gap-3">
-              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Open Ritesh Kumar LinkedIn profile" className={`min-h-11 min-w-11 p-2 rounded flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 ${isDark ? "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-indigo-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-500"} border transition-colors`}>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className={`p-2 rounded ${isDark ? "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-indigo-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-500"} border transition-colors`}>
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a href={site.socialGitHub || "https://github.com/riteshkumarwebdev"} target="_blank" rel="noopener noreferrer" aria-label="Open Ritesh Kumar GitHub profile" className={`min-h-11 min-w-11 p-2 rounded flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 ${isDark ? "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-indigo-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-500"} border transition-colors`}>
+              <a href={site.socialGitHub || "https://github.com/ritesh-kumar"} target="_blank" rel="noopener noreferrer" className={`p-2 rounded ${isDark ? "bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-indigo-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-indigo-500"} border transition-colors`}>
                 <Github className="w-4 h-4" />
               </a>
             </div>
@@ -1348,10 +816,10 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
           <div>
             <h4 className={`text-xs font-mono font-bold ${isDark ? "text-slate-400" : "text-slate-700"} uppercase tracking-wider mb-4`}>Quick Links</h4>
             <ul className={`space-y-2 text-xs ${t.textMuted} font-mono`}>
-              <li><a href="#about" className="hover:text-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded">Bio Profile</a></li>
-              <li><a href="#services" className="hover:text-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded">Our Services</a></li>
-              <li><a href="#skills" className="hover:text-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded">Technical Skill Matrix</a></li>
-              <li><a href="#portfolio" className="hover:text-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded">Past Projects</a></li>
+              <li><a href="#about" className="hover:text-indigo-400">Bio Profile</a></li>
+              <li><a href="#services" className="hover:text-indigo-400">Our Services</a></li>
+              <li><a href="#skills" className="hover:text-indigo-400">Technical Skill Matrix</a></li>
+              <li><a href="#portfolio" className="hover:text-indigo-400">Past Projects</a></li>
             </ul>
           </div>
 
@@ -1359,7 +827,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
 
         <div className={`max-w-7xl mx-auto mt-12 pt-8 border-t ${isDark ? "border-slate-900/60" : "border-slate-200"} flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${t.textMuted} font-mono`}>
           <p>{db?.site?.footerText || "© 2026 Ritesh Kumar. All rights reserved."}</p>
-          <a href="#home" className="min-h-11 hover:text-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400 rounded flex items-center gap-1">
+          <a href="#home" className="hover:text-indigo-500 flex items-center gap-1">
             Back to Top <ArrowUp className="w-3.5 h-3.5" />
           </a>
         </div>
@@ -1446,7 +914,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                   </div>
 
                   <div className="pt-4 border-t border-slate-800 space-y-2.5">
-                    {isUsableExternalUrl(selectedProject.projectUrl) && (
+                    {selectedProject.projectUrl && (
                       <a 
                         href={selectedProject.projectUrl} 
                         target="_blank" 
@@ -1456,7 +924,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                         Launch Direct URL ↗
                       </a>
                     )}
-                    {isUsableExternalUrl(selectedProject.githubUrl) && (
+                    {selectedProject.githubUrl && (
                       <a 
                         href={selectedProject.githubUrl} 
                         target="_blank" 
@@ -1550,7 +1018,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                       onError={(e) => {
                         e.currentTarget.src = "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=600";
                       }}
-                      className="w-full h-full object-cover object-top" 
+                      className="w-full h-full object-cover" 
                     />
                   </div>
                   <div>
@@ -1561,7 +1029,7 @@ export default function PortfolioView({ onOpenAdmin, siteName }: PortfolioViewPr
                 <a 
                   href="#contact" 
                   onClick={() => setSelectedBlog(null)}
-                  className="px-4 py-2 text-xs font-mono font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
+                  className="px-4 py-2 text-xs font-mono font-bold bg-indigo-600 hover:bg-indigo-5050 text-white rounded-lg"
                 >
                   Ask Me Question
                 </a>
