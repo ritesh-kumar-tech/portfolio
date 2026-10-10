@@ -29,5 +29,10 @@ function normalizeAssetUrls(data: Database): Database {
       profileImage: assetPath(data.profile.profileImage),
       resumeUrl: assetPath(data.profile.resumeUrl),
     },
+    projects: data.projects.map((project) => ({
+      ...project,
+      thumbnail: assetPath(project.thumbnail),
+      gallery: project.gallery.map(assetPath),
+    })),
   };
 }
