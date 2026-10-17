@@ -10,7 +10,7 @@
     "portfolioUrl": "https://vivanwebsolution.com/portfolio/",
     "location": "Ahmedabad, Gujarat, India (Available Worldwide)",
     "profileImage": "/assets/ritesh_profile.jpg",
-    "resumeUrl": "/assets/Ritesh_Kumar_Resume.pdf"
+    "resumeUrl": "/Ritesh-Kumar-Resume.pdf"
   },
   "hero": {
     "heading": "Building Powerful, Scalable Custom Web Solutions",
@@ -376,7 +376,7 @@
       "description": "Best-Destination.com offers expert travel guides and recommendations to help travelers discover top destinations, plan unforgettable trips, and experience the best of the world’s sights.",
       "features": [],
       "clientName": "Best Destination",
-      "projectUrl": "https://best-destination.com/",
+      "projectUrl": "",
       "githubUrl": "",
       "thumbnail": "assets/projects/best-destination.png",
       "gallery": [
@@ -400,7 +400,7 @@
       "description": "ReviewCentre.com is an online platform that allows users to share and read reviews on a wide range of products and services, helping consumers make informed decisions.",
       "features": [],
       "clientName": "Reviewcentre",
-      "projectUrl": "https://www.reviewcentre.com/",
+      "projectUrl": "",
       "githubUrl": "",
       "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
       "gallery": [
@@ -496,7 +496,7 @@
       "description": "Highland Oaks in Lubbock, Texas, is a residential community offering spacious lots, custom homes, and a peaceful neighborhood setting.",
       "features": [],
       "clientName": "Highland Oaks",
-      "projectUrl": "http://highlandoakslubbock.com/",
+      "projectUrl": "",
       "githubUrl": "",
       "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
       "gallery": [
@@ -1600,7 +1600,7 @@
       "description": "A complete Student Management System built with Django, featuring modules for Students, Staff, Courses, Attendance, and Results. It offers role-based portals, authentication, profile management, and a responsive Bootstrap 5 dashboard.",
       "features": [],
       "clientName": "Preskool",
-      "projectUrl": "https://sms.demo.buildwebproject.com/",
+      "projectUrl": "",
       "githubUrl": "",
       "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
       "gallery": [
@@ -1864,7 +1864,7 @@
       "description": "A centralized web application for managing environmental service operations, including customers, quotes, jobsheets, scheduling, generators, maintenance, inventory, safety requirements, and reporting.",
       "features": [],
       "clientName": "Foundation Environmental",
-      "projectUrl": "https://jrs.foundationenv.com/",
+      "projectUrl": "",
       "githubUrl": "",
       "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
       "gallery": [
@@ -2284,7 +2284,7 @@
     "websiteName": "Ritesh Kumar Portfolio",
     "footerText": "© 2026 Ritesh Kumar. All rights reserved. Delighting clients globally from Gujarat, India.",
     "socialLinkedIn": "https://www.linkedin.com/in/ritesh-kumar-freelancer",
-    "socialGitHub": "https://github.com/ritesh-kumar",
+    "socialGitHub": "https://github.com/ritesh-kumar-tech",
     "socialWhatsApp": "https://wa.me/917463867570",
     "socialEmail": "ritesh2001stm@gmail.com",
     "maintenanceMode": false,

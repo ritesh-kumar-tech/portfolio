@@ -206,7 +206,7 @@ const defaultDb: Database = {
     portfolioUrl: "https://vivanwebsolution.com/portfolio/",
     location: "Ahmedabad, Gujarat, India (Available Worldwide)",
     profileImage: "/assets/ritesh_profile.jpg",
-    resumeUrl: "/assets/Ritesh_Kumar_Resume.pdf"
+    resumeUrl: "/Ritesh-Kumar-Resume.pdf"
   },
   hero: {
     heading: "Building Powerful, Scalable Custom Web Solutions",
