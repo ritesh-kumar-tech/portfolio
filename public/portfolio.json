@@ -306,9 +306,9 @@
       "clientName": "Rogles Aventura",
       "projectUrl": "https://rogles.org/en/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/rogles-aventura.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/rogles-aventura.svg"
       ],
       "featured": true,
       "status": true,
@@ -376,7 +376,7 @@
       "description": "Best-Destination.com offers expert travel guides and recommendations to help travelers discover top destinations, plan unforgettable trips, and experience the best of the world’s sights.",
       "features": [],
       "clientName": "Best Destination",
-      "projectUrl": "",
+      "projectUrl": "https://web.archive.org/web/2026/https://best-destination.com/",
       "githubUrl": "",
       "thumbnail": "assets/projects/best-destination.png",
       "gallery": [
@@ -400,11 +400,11 @@
       "description": "ReviewCentre.com is an online platform that allows users to share and read reviews on a wide range of products and services, helping consumers make informed decisions.",
       "features": [],
       "clientName": "Reviewcentre",
-      "projectUrl": "",
+      "projectUrl": "https://web.archive.org/web/2026/https://www.reviewcentre.com/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/reviewcentre.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/reviewcentre.svg"
       ],
       "featured": false,
       "status": true,
@@ -426,9 +426,9 @@
       "clientName": "AI Growth",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/ai-growth.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/ai-growth.svg"
       ],
       "featured": false,
       "status": true,
@@ -498,9 +498,9 @@
       "clientName": "Highland Oaks",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/highland-oaks.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/highland-oaks.svg"
       ],
       "featured": false,
       "status": true,
@@ -522,9 +522,9 @@
       "clientName": "Atlas Gutter Guard",
       "projectUrl": "https://measure.atlasgutterguard.com/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/atlas-gutter-guard.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/atlas-gutter-guard.svg"
       ],
       "featured": false,
       "status": true,
@@ -666,9 +666,9 @@
       "clientName": "Punt Club",
       "projectUrl": "https://www.puntclub.com/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/punt-club.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/punt-club.svg"
       ],
       "featured": false,
       "status": true,
@@ -690,9 +690,9 @@
       "clientName": "NSID",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/nsid.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/nsid.svg"
       ],
       "featured": false,
       "status": true,
@@ -714,9 +714,9 @@
       "clientName": "Mobio",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mobio.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mobio.svg"
       ],
       "featured": false,
       "status": true,
@@ -762,9 +762,9 @@
       "clientName": "PriceSpy",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/pricespy.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/pricespy.svg"
       ],
       "featured": false,
       "status": true,
@@ -858,9 +858,9 @@
       "clientName": "Email Signature Rescue",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/email-signature-rescue.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/email-signature-rescue.svg"
       ],
       "featured": false,
       "status": true,
@@ -882,9 +882,9 @@
       "clientName": "Munireg",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/munireg.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/munireg.svg"
       ],
       "featured": false,
       "status": true,
@@ -906,9 +906,9 @@
       "clientName": "Mitm Pay",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mitm-pay.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mitm-pay.svg"
       ],
       "featured": false,
       "status": true,
@@ -930,9 +930,9 @@
       "clientName": "The TurboChyll ERP",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/the-turbochyll-erp.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/the-turbochyll-erp.svg"
       ],
       "featured": false,
       "status": true,
@@ -954,9 +954,9 @@
       "clientName": "Mobio Admin",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mobio-admin.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mobio-admin.svg"
       ],
       "featured": false,
       "status": true,
@@ -978,9 +978,9 @@
       "clientName": "The Weed Exchange",
       "projectUrl": "https://theweedexchange.com/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/the-weed-exchange.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/the-weed-exchange.svg"
       ],
       "featured": false,
       "status": true,
@@ -1002,9 +1002,9 @@
       "clientName": "AI Growth Admin",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/ai-growth-admin.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/ai-growth-admin.svg"
       ],
       "featured": false,
       "status": true,
@@ -1026,9 +1026,9 @@
       "clientName": "Lapsify",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/lapsify.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/lapsify.svg"
       ],
       "featured": false,
       "status": true,
@@ -1050,9 +1050,9 @@
       "clientName": "Wall Street Italia",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/wall-street-italia.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/wall-street-italia.svg"
       ],
       "featured": false,
       "status": true,
@@ -1074,9 +1074,9 @@
       "clientName": "GitHub - 2FA Plugin",
       "projectUrl": "https://github.com/vivanwebsolution/sylius-2fa-plugin",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/github-2fa-plugin.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/github-2fa-plugin.svg"
       ],
       "featured": false,
       "status": true,
@@ -1098,9 +1098,9 @@
       "clientName": "Sylius Store - 2FA Plugin",
       "projectUrl": "https://store.sylius.com/products/sylius-2fa-plugin-by-vivan-web-solution",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/sylius-store-2fa-plugin.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/sylius-store-2fa-plugin.svg"
       ],
       "featured": false,
       "status": true,
@@ -1122,9 +1122,9 @@
       "clientName": "Mautic",
       "projectUrl": "https://github.com/niravpateljoin/mautic",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mautic.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mautic.svg"
       ],
       "featured": false,
       "status": true,
@@ -1146,9 +1146,9 @@
       "clientName": "Symfony + JWT",
       "projectUrl": "https://github.com/niravpateljoin/symfony-api",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/symfony-jwt.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/symfony-jwt.svg"
       ],
       "featured": false,
       "status": true,
@@ -1170,9 +1170,9 @@
       "clientName": "Laravel + Vue JS",
       "projectUrl": "https://github.com/niravpateljoin/favourite_fruits",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/laravel-vue-js.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/laravel-vue-js.svg"
       ],
       "featured": false,
       "status": true,
@@ -1194,9 +1194,9 @@
       "clientName": "Python + AI",
       "projectUrl": "https://github.com/niravpateljoin/python-guess-game",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/python-ai.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/python-ai.svg"
       ],
       "featured": false,
       "status": true,
@@ -1218,9 +1218,9 @@
       "clientName": "Loan Strategy Adviser",
       "projectUrl": "https://github.com/niravpateljoin/python-loan-strategy-advisor",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/loan-strategy-adviser.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/loan-strategy-adviser.svg"
       ],
       "featured": false,
       "status": true,
@@ -1242,9 +1242,9 @@
       "clientName": "Order Management App",
       "projectUrl": "https://github.com/niravpateljoin/angularsymfonyapp",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/order-management-app.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/order-management-app.svg"
       ],
       "featured": false,
       "status": true,
@@ -1266,9 +1266,9 @@
       "clientName": "Laravel + React JS",
       "projectUrl": "https://github.com/niravpateljoin/Fruits-Test-Task",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/laravel-react-js.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/laravel-react-js.svg"
       ],
       "featured": false,
       "status": true,
@@ -1290,9 +1290,9 @@
       "clientName": "React JS",
       "projectUrl": "https://github.com/niravpateljoin/react-js-example/tree/main",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/react-js.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/react-js.svg"
       ],
       "featured": false,
       "status": true,
@@ -1314,9 +1314,9 @@
       "clientName": "Node JS",
       "projectUrl": "https://github.com/niravpateljoin/nodejs-usermanagement-practical",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/node-js.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/node-js.svg"
       ],
       "featured": false,
       "status": true,
@@ -1338,9 +1338,9 @@
       "clientName": "Mini Ticketing System",
       "projectUrl": "https://github.com/niravpateljoin/nodejs-practical",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mini-ticketing-system.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mini-ticketing-system.svg"
       ],
       "featured": false,
       "status": true,
@@ -1362,9 +1362,9 @@
       "clientName": "MailChimp",
       "projectUrl": "https://github.com/niravpateljoin/MailChimp-API-v3",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mailchimp.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mailchimp.svg"
       ],
       "featured": false,
       "status": true,
@@ -1386,9 +1386,9 @@
       "clientName": "Stripe",
       "projectUrl": "https://github.com/niravpateljoin/stripe-payment",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/stripe.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/stripe.svg"
       ],
       "featured": false,
       "status": true,
@@ -1410,9 +1410,9 @@
       "clientName": "Mini Ticket System",
       "projectUrl": "https://github.com/niravpateljoin/mini-ticket-system-task",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mini-ticket-system.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mini-ticket-system.svg"
       ],
       "featured": false,
       "status": true,
@@ -1434,9 +1434,9 @@
       "clientName": "VueJs",
       "projectUrl": "https://github.com/niravpateljoin/vue-js-example",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/vuejs.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/vuejs.svg"
       ],
       "featured": false,
       "status": true,
@@ -1458,9 +1458,9 @@
       "clientName": "Laravel",
       "projectUrl": "https://github.com/niravpateljoin/Laravel-Demo-Code",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/laravel.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/laravel.svg"
       ],
       "featured": false,
       "status": true,
@@ -1482,9 +1482,9 @@
       "clientName": "Symfony",
       "projectUrl": "https://github.com/niravpateljoin/home-task",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/symfony.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/symfony.svg"
       ],
       "featured": false,
       "status": true,
@@ -1506,9 +1506,9 @@
       "clientName": "SwagPOS System",
       "projectUrl": "https://github.com/niravpateljoin/SwagPOS/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/swagpos-system.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/swagpos-system.svg"
       ],
       "featured": false,
       "status": true,
@@ -1530,9 +1530,9 @@
       "clientName": "SwagPromoGenius",
       "projectUrl": "https://github.com/niravpateljoin/SwagPromoGenius",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/swagpromogenius.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/swagpromogenius.svg"
       ],
       "featured": false,
       "status": true,
@@ -1554,9 +1554,9 @@
       "clientName": "Smart Ticket Api",
       "projectUrl": "https://github.com/niravpateljoin/smart-ticket-api",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/smart-ticket-api.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/smart-ticket-api.svg"
       ],
       "featured": false,
       "status": true,
@@ -1578,9 +1578,9 @@
       "clientName": "Mutic - 2 Factor Authentication",
       "projectUrl": "https://github.com/niravpateljoin/MauticTwoFactorAuthBundle",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/mutic-2-factor-authentication.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/mutic-2-factor-authentication.svg"
       ],
       "featured": false,
       "status": true,
@@ -1602,9 +1602,9 @@
       "clientName": "Preskool",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/preskool.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/preskool.svg"
       ],
       "featured": false,
       "status": true,
@@ -1626,9 +1626,9 @@
       "clientName": "Django Scraping Dashboard",
       "projectUrl": "https://github.com/niravpateljoin/Python-scraping",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/django-scraping-dashboard.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/django-scraping-dashboard.svg"
       ],
       "featured": false,
       "status": true,
@@ -1650,9 +1650,9 @@
       "clientName": "Django Ecommerce Store",
       "projectUrl": "https://github.com/niravpateljoin/Django-Ecommerce-Store",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/django-ecommerce-store.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/django-ecommerce-store.svg"
       ],
       "featured": false,
       "status": true,
@@ -1674,9 +1674,9 @@
       "clientName": "AppointmentBot",
       "projectUrl": "https://github.com/niravpateljoin/Python-AppointmentBot",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/appointmentbot.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/appointmentbot.svg"
       ],
       "featured": false,
       "status": true,
@@ -1746,9 +1746,9 @@
       "clientName": "4k Custom Rods",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/4k-custom-rods.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/4k-custom-rods.svg"
       ],
       "featured": false,
       "status": true,
@@ -1770,9 +1770,9 @@
       "clientName": "Raj Tours Portal",
       "projectUrl": "https://admin.rajankumartourism.com/",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/raj-tours-portal.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/raj-tours-portal.svg"
       ],
       "featured": false,
       "status": true,
@@ -1842,9 +1842,9 @@
       "clientName": "TrendCatch Advertiser",
       "projectUrl": "https://play.google.com/store/apps/details?id=com.tradecache.trade_cache_flutter_app",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/trendcatch-advertiser.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/trendcatch-advertiser.svg"
       ],
       "featured": false,
       "status": true,
@@ -1866,9 +1866,9 @@
       "clientName": "Foundation Environmental",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/foundation-environmental.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/foundation-environmental.svg"
       ],
       "featured": false,
       "status": true,
@@ -1890,9 +1890,9 @@
       "clientName": "Hostel & PG Management Platform",
       "projectUrl": "",
       "githubUrl": "",
-      "thumbnail": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+      "thumbnail": "assets/projects/hostel-pg-management-platform.svg",
       "gallery": [
-        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800"
+        "assets/projects/hostel-pg-management-platform.svg"
       ],
       "featured": false,
       "status": true,
